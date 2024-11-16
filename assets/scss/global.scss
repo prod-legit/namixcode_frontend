@@ -1,0 +1,16 @@
+@font-face {
+    font-family: "Mont Blanc-Trial";
+    src: url("/fonts/mont/MontBlanc-Trial-Bold.otf");
+}
+
+body {
+    font-family: "Inter";
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: "Mont Blanc-Trial" "Inter";
+    }
+}
