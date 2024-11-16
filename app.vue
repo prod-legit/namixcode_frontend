@@ -6,6 +6,7 @@ colorMode.preference = "light";
 
 <template>
     <div class="__root">
+        <UNotifications />
         <NuxtRouteAnnouncer />
         <NuxtLayout>
             <NuxtPage />
