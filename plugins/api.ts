@@ -6,10 +6,9 @@ export default defineNuxtPlugin((nuxtApp) => {
         user: null,
     }));
     const api = $fetch.create({
-        baseURL: "https://ram-loved-eagle.ngrok-free.app",
-        onRequest({ request, options, error }) {
+        baseURL: "https://starlink.lysmux.dev",
+        onRequest({ options }) {
             if (session.value?.token) {
-                // note that this relies on ofetch >= 1.4.0 - you may need to refresh your lockfile
                 options.headers.set(
                     "Authorization",
                     `Bearer ${session.value?.token}`
