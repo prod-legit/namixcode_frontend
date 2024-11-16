@@ -5,7 +5,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const {
         params: { utype },
     } = to;
-    if (to.path === `/${utype}/login`) return;
     const { $api } = useNuxtApp();
     if (utype) {
         try {
