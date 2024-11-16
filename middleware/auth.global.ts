@@ -2,6 +2,7 @@ import { useLocalStorage } from "@vueuse/core";
 import type { User } from "~/types/User";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
+    if (import.meta.server) return;
     const {
         params: { utype },
     } = to;
@@ -15,10 +16,19 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
                 token: null,
                 user: null,
             }));
-            const user = await $api<User>(`/api/${utype}/me`);
+            const user = await $api<User>(`/api/${utype}/me`, {
+                headers: {
+                    Authorization: `Bearer ${session.value.token}`,
+                },
+            });
             session.value.user = user;
         } catch {
-            return navigateTo(`/${utype}/login`);
+            return navigateTo({
+                path: "/login",
+                query: {
+                    flowDest: to.fullPath,
+                },
+            });
         }
     }
 });
