@@ -1,4 +1,4 @@
-interface Organization {
+export interface Organization {
     id: string;
     email: string;
     name: string;
@@ -9,7 +9,7 @@ interface Organization {
     scope: string;
 }
 
-interface Person {
+export interface Person {
     id: string;
     name: string;
     phone: string;
