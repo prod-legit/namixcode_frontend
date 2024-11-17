@@ -13,4 +13,18 @@ body {
     h6 {
         font-family: "Mont Blanc-Trial" "Inter";
     }
+    .page-enter-active,
+    .page-leave-active {
+        transition: all 0.8s ease;
+        position: absolute;
+        right: 0;
+        left: 0;
+    }
+
+    .page-enter-from,
+    .page-leave-to {
+        opacity: 0;
+        filter: blur(1rem);
+        translate: 1rem 0;
+    }
 }
