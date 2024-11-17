@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { useLocalStorage } from "@vueuse/core";
 import type { User } from "~/types/User";
-const {
-    params: { utype },
-} = useRoute();
+
+definePageMeta({
+    name: "Регистрация",
+    layout: "empty",
+});
 
 const tabs = [
     {
@@ -133,7 +135,7 @@ const registerSubmit = async () => {
             const { token } = await $api<{
                 token: string;
                 type: string;
-            }>(`/api/user/register`, {
+            }>(`/user/register`, {
                 method: "POST",
                 body: registrationData,
             });
@@ -153,7 +155,7 @@ const registerSubmit = async () => {
             const { token } = await $api<{
                 token: string;
                 type: string;
-            }>(`/api/org/register`, {
+            }>(`/org/register`, {
                 method: "POST",
                 body: registrationData,
             });
@@ -203,7 +205,7 @@ const pickAvatar = () => {
             class="w-full md:w-1/2 flex items-center justify-center bg-flamingo-500 md:h-screen rounded-bl-2xl rounded-br-2xl md:rounded-br-none md:rounded-tl-2xl"
         >
             <img
-                class="w-1/2 object-contain aspect-square max-w-[500px] rounded-full hover:scale-105 transition-transform duration-1000 select-none ease-in-out"
+                class="w-1/2 object-cover aspect-[1/1] max-w-[500px] rounded-full hover:scale-105 transition-transform duration-1000 select-none ease-in-out"
                 :src="`/media/auth/${flow.step}.png`"
                 alt="Графика"
             />

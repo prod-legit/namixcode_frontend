@@ -1,9 +1,11 @@
 <script lang="ts" setup>
+definePageMeta({
+    name: "Вход",
+    layout: "empty",
+});
+
 import { useLocalStorage } from "@vueuse/core";
 import type { User } from "~/types/User";
-const {
-    params: { utype },
-} = useRoute();
 
 const tabs = [
     {
@@ -32,7 +34,7 @@ const router = useRouter();
 const loginSubmit = async (picked: "user" | "org") => {
     try {
         const { token } = await $api<{ token: string; type: string }>(
-            `/api/${picked}/login`,
+            `/${picked}/login`,
             {
                 method: "POST",
                 body: {
@@ -41,12 +43,6 @@ const loginSubmit = async (picked: "user" | "org") => {
                 },
             }
         );
-        toast.add({
-            color: "green",
-            title: "Успешный вход",
-            description: "Вы успешно вошли в систему",
-            icon: "line-md:check-twotone",
-        });
 
         const session = useLocalStorage<{
             token: string | null;
@@ -58,17 +54,20 @@ const loginSubmit = async (picked: "user" | "org") => {
 
         session.value.token = token;
 
-        const user = await $api<User>(`/api/${picked}/me`);
+        const user = await $api<User>(`/${picked}/me`);
 
-        router.push((route.query.flowDest as string | undefined) ?? "/");
+        router.push(
+            (route.query.flowDest as string | undefined) ?? `/${picked}`
+        );
 
         toast.add({
             color: "green",
             title: `Добро пожаловать, ${
-                picked === "user" ? user.fullName : ""
-            }`,
-            description: "Вы успешно вошли в систему",
-            icon: "line-md:check-twotone",
+                picked === "user"
+                    ? user.name?.split(" ")[1] ?? user.name ?? "соискатель"
+                    : user.name
+            }!`,
+            icon: "line-md:briefcase-check-twotone",
         });
     } catch (err) {
         toast.add({
@@ -88,7 +87,7 @@ const { $api } = useNuxtApp();
             class="w-full md:w-1/2 flex items-center justify-center bg-flamingo-500 md:h-screen rounded-bl-2xl rounded-br-2xl md:rounded-br-none md:rounded-tl-2xl"
         >
             <img
-                class="w-1/2 object-contain aspect-square max-w-[500px] rounded-full hover:scale-105 transition-transform duration-1000 select-none ease-in-out"
+                class="w-1/2 object-cover aspect-[1/1] max-w-[500px] rounded-full hover:scale-105 transition-transform duration-1000 select-none ease-in-out"
                 src="/media/auth/4.png"
                 alt="Графика"
             />
