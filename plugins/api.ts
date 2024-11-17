@@ -6,13 +6,14 @@ export default defineNuxtPlugin((nuxtApp) => {
         user: null,
     }));
     const api = $fetch.create({
-        baseURL: "https://starlink.lysmux.dev",
+        baseURL: "https://ram-loved-eagle.ngrok-free.app", //"https://starlink.lysmux.dev/api",
         onRequest({ options }) {
             if (session.value?.token) {
                 options.headers.set(
                     "Authorization",
                     `Bearer ${session.value?.token}`
                 );
+                options.headers.set("ngrok-skip-browser-warning", "69420");
             }
         },
         async onResponseError({ response, error }) {
