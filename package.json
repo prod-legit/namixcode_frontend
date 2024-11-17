@@ -1,23 +1,24 @@
 {
-  "name": "nuxt-app",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
-  },
-  "dependencies": {
-    "@nuxt/fonts": "^0.10.2",
-    "@nuxt/ui": "^2.19.2",
-    "nuxt": "^3.14.159",
-    "nuxt-auth-utils": "^0.5.5",
-    "vue": "latest",
-    "vue-router": "latest"
-  },
-  "devDependencies": {
-    "sass": "^1.81.0"
-  }
+	"name": "nuxt-app",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "nuxt build",
+		"dev": "nuxt dev",
+		"generate": "nuxt generate",
+		"preview": "nuxt preview",
+		"postinstall": "nuxt prepare"
+	},
+	"dependencies": {
+		"@nuxt/fonts": "^0.10.2",
+		"@nuxt/ui": "^2.19.2",
+		"@nuxtjs/mdc": "^0.9.2",
+		"@nuxtjs/seo": "^2.0.0-rc.23",
+		"nuxt": "^3.14.159",
+		"vue": "latest",
+		"vue-router": "latest"
+	},
+	"devDependencies": {
+		"sass": "^1.81.0"
+	}
 }
