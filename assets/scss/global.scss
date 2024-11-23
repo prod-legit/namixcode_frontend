@@ -1,0 +1,51 @@
+@font-face {
+    font-family: "Mont Blanc-Trial";
+    src: url("/fonts/mont/MontBlanc-Trial-Bold.otf");
+}
+
+body {
+    font-family: "Inter";
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: "Mont Blanc-Trial" "Inter";
+    }
+
+    overflow-x: hidden;
+
+    .page-enter-active,
+    .page-leave-active {
+        transition: all 0.8s ease;
+        position: absolute;
+        right: 0;
+        left: 0;
+    }
+
+    .page-enter-from,
+    .page-leave-to {
+        opacity: 0;
+        filter: blur(1rem);
+        translate: 1rem 0;
+    }
+
+    --header-height: 100px;
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* add the code bellow */
+@layer utilities {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+}

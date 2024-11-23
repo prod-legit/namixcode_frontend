@@ -1,0 +1,8 @@
+image:
+  tag: "latest"
+  pullSecret: secret
+
+ingress:
+  path: /
+  domain: domain
+  tlsSecretName: secret
