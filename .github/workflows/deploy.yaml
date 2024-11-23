@@ -1,0 +1,83 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Image tag for deploy"
+        default: latest
+        type: string
+        required: false
+
+  workflow_call:
+    inputs:
+      image_tag:
+        description: "Image tag for deploy"
+        type: string
+        required: true
+
+jobs:
+  deploy:
+    environment: prod
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+
+    env:
+      PULL_SECRET: gh-pull-secret
+      RELEASE_NAME: ${{ vars.RELEASE_NAME || 'starlink-frontend' }}
+      RELEASE_NAMESPACE: ${{ vars.RELEASE_NAMESPACE || 'starlink' }}
+      API_URL: ${{ vars.API_URL }}
+      INGRESS_DOMAIN: ${{ vars.INGRESS_DOMAIN }}
+      INGRESS_PATH: ${{ vars.INGRESS_PATH || '/' }}
+      INGRESS_TLS_SECRET_NAME: ${{ vars.INGRESS_TLS_SECRET_NAME }}
+
+    steps:
+      - name: Checkout helm chart
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            helm
+
+      - name: Set the Kubernetes context
+        uses: azure/k8s-set-context@v4
+        with:
+          method: service-account
+          k8s-url: ${{ secrets.KUBERNETES_URL }}
+          k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
+
+      - uses: Azure/k8s-create-secret@v5
+        with:
+            container-registry-url: ghcr.io
+            container-registry-username: ${{ github.repository_owner }}
+            container-registry-password: ${{ secrets.GITHUB_TOKEN }}
+            secret-name: ${{ env.PULL_SECRET }}
+            namespace: ${{ env.RELEASE_NAMESPACE }}
+      
+      - uses: azure/k8s-bake@v3
+        with:
+            renderEngine: 'helm'
+            helmChart: './helm/'
+            releaseName: ${{ env.RELEASE_NAME }}
+            overrides: |
+              config.api_url: ${{ env.API_URL }}
+              ingress.enabled: true
+              ingress.domain: ${{ env.INGRESS_DOMAIN }}
+              ingress.path: ${{ env.INGRESS_PATH }}
+              ingress.tlsSecretName: ${{ env.INGRESS_TLS_SECRET_NAME }}
+            helm-version: 'latest'
+        id: bake
+
+      - name: Deploy to the Kubernetes cluster
+        uses: azure/k8s-deploy@v5
+        with:
+          action: deploy
+          strategy: basic
+          images: ghcr.io/namixcode_frontend:${{ inputs.image_tag }}
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          namespace: ${{ env.RELEASE_NAMESPACE }}
+          imagepullsecrets: |
+           ${{ env.PULL_SECRET }}

@@ -1,8 +1,17 @@
 image:
+  repository: ghcr.io/prod-legit/namixcode_frontend
   tag: "latest"
-  pullSecret: secret
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
 
 ingress:
+  enabled: false
+  className: traefik
+  clusterIssuer: letsencrypt-prod
   path: /
-  domain: domain
-  tlsSecretName: secret
+  domain: example.com
+  tlsSecretName: ""
+
+config:
+  api_url: https://example.com/api

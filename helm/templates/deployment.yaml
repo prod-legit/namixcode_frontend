@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ .Release.Name }}-deploy"
-  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -15,17 +14,25 @@ spec:
   template:
     metadata:
       labels:
+        name: "{{ .Release.Name }}-deploy"
         app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
         helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         app: {{ .Release.Name }}
     spec:
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        - name: {{ .Values.image.pullSecret }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: backend
-        image: "ghcr.io/prod-legit/namixcode_frontend:{{ .Values.image.tag }}"
-        imagePullPolicy: IfNotPresent
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 3000
-  
+        env:
+        - name: NUXT_PUBLIC_API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: "{{ .Release.Name }}-config"
+              key: API_URL
